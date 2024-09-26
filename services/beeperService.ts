@@ -44,7 +44,7 @@ export const updateBeeperStatus = async (beeper : Beeper):Promise<Beeper> => {
 
 
 
-
+//פונקציית הפעלת הטיימר ושינוי הערכים הרלוונטיים
 export const openTimer = async (updatedBeeper: Beeper): Promise<Beeper> => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -59,7 +59,7 @@ export const openTimer = async (updatedBeeper: Beeper): Promise<Beeper> => {
 
 
 
-
+//מתודה שבודקת האם ביפר נמצא בלבנון
 export const isInLebanon = async (latitude: number, longitude: number): Promise<boolean> => {
     for(let i = 0; i < LatitudePoints.length; i++){
         if(LatitudePoints[i] === latitude && LongitudePoints[i] === longitude){

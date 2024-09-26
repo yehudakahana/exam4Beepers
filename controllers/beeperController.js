@@ -80,12 +80,19 @@ export const updateBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
         if (!beeper) {
             res.status(404).send('Beeper not found');
         }
+        //אם קיים ביפר
         else {
             beeper = yield updateBeeperStatus(beeper);
             if (beeper.status === BeeperStatus.DEPLOYED) {
                 const latitude = Number(req.body.latitude);
                 const longitude = Number(req.body.longitude);
+                //אם לא סיפק קואורדינטות יקבל שגיאה
+                if (!latitude || !longitude) {
+                    res.status(400).send('Latitude and longitude are required');
+                    return;
+                }
                 let isLebanon = yield isInLebanon(latitude, longitude);
+                //אם לא בלבנון יקבל שגיאה
                 if (!isLebanon) {
                     res.status(400).send('Beeper is not in Lebanon');
                     return;
@@ -93,11 +100,13 @@ export const updateBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
                 beeper.latitude = latitude;
                 beeper.longitude = longitude;
                 yield writeAllToJson(beepers);
+                //מתחיל בתהליך הפיצוץ...
                 beepers = yield readBeepersFromJsonFile();
                 beeper = beepers.find(b => b.id === id);
                 beeper = yield openTimer(beeper);
                 yield writeAllToJson(beepers);
             }
+            //אם הסטטוס לא deployed
             else {
                 yield writeAllToJson(beepers);
             }
@@ -126,31 +135,3 @@ export const deleteBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).send(error);
     }
 });
-// export const updateBeeper = async (req: Request, res: Response) => {
-//         try {
-//              const id: string = req.params.id;
-//             let beepers: Beeper[] = await readBeepersFromJsonFile();
-//             let beeper: Beeper | undefined = beepers.find(b => b.id === id);
-//              if (!beeper) {
-//              res.status(404).send('Beeper not found');
-//              return;
-//           }
-//             const latitude: number = Number(req.body.latitude);
-//             const longitude: number = Number(req.body.longitude);
-//             let isLebanon = await isInLebanon(latitude, longitude);
-//             if (!isLebanon) {
-//              res.status(400).send('Beeper is not in Lebanon');
-//              return;
-//          }
-//              beeper = await updateBeeperStatus(beeper);
-//             beeper.latitude = latitude;
-//             beeper.longitude = longitude;
-//              await writeAllToJson(beepers);
-//              beeper = await openTimer(beeper);
-//             await writeAllToJson(beepers);
-//              res.status(200).json(beeper);
-//         }
-//         catch (error) {
-//             res.status(500).send(error);
-//          }
-//     }

@@ -41,6 +41,7 @@ export const updateBeeperStatus = (beeper) => __awaiter(void 0, void 0, void 0, 
     }
     return beeper;
 });
+//פונקציית הפעלת הטיימר ושינוי הערכים הרלוונטיים
 export const openTimer = (updatedBeeper) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -50,6 +51,7 @@ export const openTimer = (updatedBeeper) => __awaiter(void 0, void 0, void 0, fu
         }, 10000);
     });
 });
+//מתודה שבודקת האם ביפר נמצא בלבנון
 export const isInLebanon = (latitude, longitude) => __awaiter(void 0, void 0, void 0, function* () {
     for (let i = 0; i < LatitudePoints.length; i++) {
         if (LatitudePoints[i] === latitude && LongitudePoints[i] === longitude) {
