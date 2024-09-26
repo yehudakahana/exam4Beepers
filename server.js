@@ -7,7 +7,7 @@ const PORT = 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/", authRouter);
+app.use("/api/beepers/", authRouter);
 app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT);
 });
