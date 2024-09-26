@@ -11,13 +11,15 @@ import { createNewBeeper, updateBeeperStatus, isInLebanon , openTimer} from "../
 export const createBeeper = async (req: Request, res: Response) => {
     try {
         const name: string = req.body.name;
+        if (!name) {
+            res.status(400).send('Name is required');
+            return;
+        }
         const beepers: Beeper[] = await readBeepersFromJsonFile();
-
         if (beepers.find(b => b.name === name)) {
             res.status(400).send('Beeper already exists');
             return;
         }
-
         const newBeeper: Beeper = await createNewBeeper(name);
         beepers.push(newBeeper);
         await writeAllToJson(beepers);
@@ -83,6 +85,8 @@ export const getBeepersByStatus = async (req: Request, res: Response) => {
 
 
 
+
+
 export const updateBeeper = async (req: Request, res: Response) => {
     try {
         const id: string = req.params.id;
@@ -93,9 +97,7 @@ export const updateBeeper = async (req: Request, res: Response) => {
         }
         else {
                 beeper = await updateBeeperStatus(beeper);
-                await writeAllToJson(beepers);
             
-
            if (beeper.status === BeeperStatus.DEPLOYED) {
                 const latitude: number = Number(req.body.latitude);
                 const longitude: number = Number( req.body.longitude);
@@ -115,6 +117,10 @@ export const updateBeeper = async (req: Request, res: Response) => {
                 beeper =  await openTimer(beeper!);
 
                 await writeAllToJson(beepers);
+
+        }
+        else {
+            await writeAllToJson(beepers);
 
         }
         res.status(200).json(beeper);
@@ -155,38 +161,39 @@ export const deleteBeeper = async (req: Request, res: Response) => {
 
 
 
-// export const updateBook  = async (req: Request, res: Response) => {
-//     try {
-//         const userId: string = req.body.userId.trim();
-//         const bookId: string = req.params.bookId.trim();
-//         const users: User[] = await readUserFromJsonFile();
 
-//         const user: User | undefined = users.find(u => u.id === userId);
-//         if (!user) {    
-//             console.log(`User with ID ${userId} not found`);
-//             return res.status(404).send('User not found');
+
+
+// export const updateBeeper = async (req: Request, res: Response) => {
+//         try {
+//              const id: string = req.params.id;
+//             let beepers: Beeper[] = await readBeepersFromJsonFile();
+//             let beeper: Beeper | undefined = beepers.find(b => b.id === id);
+    
+//              if (!beeper) {
+//              res.status(404).send('Beeper not found');
+//              return;
+//           }
+    
+//             const latitude: number = Number(req.body.latitude);
+//             const longitude: number = Number(req.body.longitude);
+//             let isLebanon = await isInLebanon(latitude, longitude);
+    
+//             if (!isLebanon) {
+//              res.status(400).send('Beeper is not in Lebanon');
+//              return;
+//          }
+    
+//              beeper = await updateBeeperStatus(beeper);
+//             beeper.latitude = latitude;
+//             beeper.longitude = longitude;
+    
+//              await writeAllToJson(beepers);
+//              beeper = await openTimer(beeper);
+//             await writeAllToJson(beepers);
+//              res.status(200).json(beeper);
 //         }
-
-//         const book: Book | undefined = user.bookes!.find(b => b.id === bookId);
-//         if (!book) {
-//             console.log(`Book with ID ${bookId} not found`);
-//             return res.status(404).send('Book not found');
-//         }
-
-//         book.title = req.body.updatedData.title;
-//         book.author = req.body.updatedData.author;
-//         book.id = bookId;
-
-//         await writeAllToJson(users);
-//         res.status(200).json({ message: 'Book updated successfully' });
-
+//         catch (error) {
+//             res.status(500).send(error);
+//          }
 //     }
-//     catch (error) {
-//         res.status(500).send(error);
-//     }       
-// }
-
-
-
-
-

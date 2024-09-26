@@ -13,6 +13,10 @@ import { createNewBeeper, updateBeeperStatus, isInLebanon, openTimer } from "../
 export const createBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const name = req.body.name;
+        if (!name) {
+            res.status(400).send('Name is required');
+            return;
+        }
         const beepers = yield readBeepersFromJsonFile();
         if (beepers.find(b => b.name === name)) {
             res.status(400).send('Beeper already exists');
@@ -78,7 +82,6 @@ export const updateBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
         }
         else {
             beeper = yield updateBeeperStatus(beeper);
-            yield writeAllToJson(beepers);
             if (beeper.status === BeeperStatus.DEPLOYED) {
                 const latitude = Number(req.body.latitude);
                 const longitude = Number(req.body.longitude);
@@ -92,9 +95,10 @@ export const updateBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
                 yield writeAllToJson(beepers);
                 beepers = yield readBeepersFromJsonFile();
                 beeper = beepers.find(b => b.id === id);
-                console.log("mmmmmmm");
                 beeper = yield openTimer(beeper);
-                beeper.detonated_at = new Date();
+                yield writeAllToJson(beepers);
+            }
+            else {
                 yield writeAllToJson(beepers);
             }
             res.status(200).json(beeper);
@@ -122,28 +126,31 @@ export const deleteBeeper = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).send(error);
     }
 });
-// export const updateBook  = async (req: Request, res: Response) => {
-//     try {
-//         const userId: string = req.body.userId.trim();
-//         const bookId: string = req.params.bookId.trim();
-//         const users: User[] = await readUserFromJsonFile();
-//         const user: User | undefined = users.find(u => u.id === userId);
-//         if (!user) {    
-//             console.log(`User with ID ${userId} not found`);
-//             return res.status(404).send('User not found');
+// export const updateBeeper = async (req: Request, res: Response) => {
+//         try {
+//              const id: string = req.params.id;
+//             let beepers: Beeper[] = await readBeepersFromJsonFile();
+//             let beeper: Beeper | undefined = beepers.find(b => b.id === id);
+//              if (!beeper) {
+//              res.status(404).send('Beeper not found');
+//              return;
+//           }
+//             const latitude: number = Number(req.body.latitude);
+//             const longitude: number = Number(req.body.longitude);
+//             let isLebanon = await isInLebanon(latitude, longitude);
+//             if (!isLebanon) {
+//              res.status(400).send('Beeper is not in Lebanon');
+//              return;
+//          }
+//              beeper = await updateBeeperStatus(beeper);
+//             beeper.latitude = latitude;
+//             beeper.longitude = longitude;
+//              await writeAllToJson(beepers);
+//              beeper = await openTimer(beeper);
+//             await writeAllToJson(beepers);
+//              res.status(200).json(beeper);
 //         }
-//         const book: Book | undefined = user.bookes!.find(b => b.id === bookId);
-//         if (!book) {
-//             console.log(`Book with ID ${bookId} not found`);
-//             return res.status(404).send('Book not found');
-//         }
-//         book.title = req.body.updatedData.title;
-//         book.author = req.body.updatedData.author;
-//         book.id = bookId;
-//         await writeAllToJson(users);
-//         res.status(200).json({ message: 'Book updated successfully' });
+//         catch (error) {
+//             res.status(500).send(error);
+//          }
 //     }
-//     catch (error) {
-//         res.status(500).send(error);
-//     }       
-// }

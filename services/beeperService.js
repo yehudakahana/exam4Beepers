@@ -36,19 +36,19 @@ export const updateBeeperStatus = (beeper) => __awaiter(void 0, void 0, void 0, 
         case BeeperStatus.SHIPPED:
             beeper.status = BeeperStatus.DEPLOYED;
             break;
-        case BeeperStatus.DEPLOYED:
-            beeper.status = BeeperStatus.DETONATED;
-            break;
         default:
             break;
     }
     return beeper;
 });
 export const openTimer = (updatedBeeper) => __awaiter(void 0, void 0, void 0, function* () {
-    setTimeout(() => {
-        updatedBeeper.status = BeeperStatus.DEPLOYED;
-    }, 10000);
-    return updatedBeeper;
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            updatedBeeper.status = BeeperStatus.DETONATED;
+            updatedBeeper.detonated_at = new Date();
+            resolve(updatedBeeper);
+        }, 10000);
+    });
 });
 export const isInLebanon = (latitude, longitude) => __awaiter(void 0, void 0, void 0, function* () {
     for (let i = 0; i < LatitudePoints.length; i++) {
