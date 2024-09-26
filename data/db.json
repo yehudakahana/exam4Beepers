@@ -1,0 +1,75 @@
+[
+  {
+    "userName": "'gg@a.com",
+    "password": "A0",
+    "id": "b2b4d113-0723-45d4-9ae6-9362da0e4c72"
+  },
+  {
+    "userName": "'gggggggggggggggggg@a.com",
+    "password": "A0",
+    "id": "4864cfc9-8052-4ace-9735-7b49cad2c0bd"
+  },
+  {
+    "userName": "'gggggggggggggggggg@a.com",
+    "password": "$2b$10$Ydp1ZBkV7EYGlsNJMwC/9O0ahG0cg7/4g8IQbOsUYT9JTiSuZKZ.q",
+    "id": "4e1208d3-1ef7-4f8e-9239-2d4d70f43f59"
+  },
+  {
+    "userName": "'ccccccccccgg@a.com",
+    "password": "$2b$10$4kXSFUgTIqsP.dkZevQwFuYzLTm.DkkVn4AjubQAyOr9wEze.1ccq",
+    "id": "c19eaad8-b7f8-427b-b820-1e719b24be78",
+    "bookes": []
+  },
+  {
+    "userName": "'aaaaaaaaagg@a.com",
+    "password": "$2b$10$1JxbuSiUVVxdePTmlMd.Texr.sagGkRiCA/liTXNVp/vUB5iDG3uO",
+    "id": "f22bc337-08a5-4928-9a89-4d90219fa3d6",
+    "bookes": []
+  },
+  {
+    "userName": "ddddddddaagg@a.com",
+    "password": "$2b$10$LHX57L97OEJanB9gm2IEAuEvksnSAchsnJ4Cpf8isXVJqONCI8un2",
+    "id": "e7c86ca5-26db-4e39-bd49-074ab764db14",
+    "bookes": []
+  },
+  {
+    "userName": "ddddddddaagg@a.com",
+    "password": "$2b$10$.K7JQ7sS2Mib1vGOneLfx.j9nK2tVU01rvce2mZkW2SKNO0.f1Yfy",
+    "id": "1c830505-0d3a-451d-b3e2-5435cc53ff6e",
+    "bookes": []
+  },
+  {
+    "userName": "mmmmmmmmmmmg@a.com",
+    "password": "$2b$10$n0GnPNDu6Y4pY8Mz8DccaeidyaDh1cGdFaC2UT3uuqQ6UNWQgvZqm",
+    "id": "3ef314cf-84d2-4b37-aaa4-0a847d93afa0",
+    "bookes": []
+  },
+  {
+    "userName": "eeeeeeeeeeeeeeeemg@a.com",
+    "password": "$2b$10$k7Jf/Ev7pG0/HoSD7AEjqO9t5YkKMJArzQGPFjSgox8owO0eUUIUu",
+    "id": "6edfd417-1625-4e21-9a12-4bad1da3f8d8",
+    "bookes": [
+      {
+        "title": "1984",
+        "author": "George Orwell",
+        "id": "f6d56ed3-347f-42c3-b648-9651b150e5d6"
+      },
+      {
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "id": "8895d832-3d3c-4b35-b763-f5bbed2d072f"
+      },
+      {
+        "title": "1984",
+        "author": "George Orwell",
+        "id": "1ebe2fa4-7254-416e-99e0-dc1d00eeb7c4"
+      }
+    ]
+  },
+  {
+    "userName": "zevi",
+    "password": "$2b$10$GmemwgW7MJMXhVB9a8YmsekJ/hTINsLA6hkETWfeCI1HimSf6jwoC",
+    "id": "0ae7477a-5bf9-4398-8b4a-dd6c9d39f83f",
+    "bookes": []
+  }
+]
