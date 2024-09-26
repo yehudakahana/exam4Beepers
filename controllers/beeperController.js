@@ -8,21 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { BeeperStatus } from "../models/types.js";
-import { v4 as uuidv4 } from 'uuid';
 import { readBeepersFromJsonFile, writeAllToJson } from "../DAL/jsonBeeper.js";
+import { createNewBeeper, updateBeeperStatus, isInLebanon, openTimer } from "../services/beeperService.js";
 export const createBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const name = req.body.name;
-        const newBeeper = {
-            id: uuidv4(),
-            name: name,
-            status: BeeperStatus.MANUFACTURED,
-            created_at: new Date(),
-            detonated_at: null,
-            latitude: 0,
-            longitude: 0
-        };
         const beepers = yield readBeepersFromJsonFile();
+        if (beepers.find(b => b.name === name)) {
+            res.status(400).send('Beeper already exists');
+            return;
+        }
+        const newBeeper = yield createNewBeeper(name);
         beepers.push(newBeeper);
         yield writeAllToJson(beepers);
         res.status(201).json(newBeeper);
@@ -75,16 +71,33 @@ export const getBeepersByStatus = (req, res) => __awaiter(void 0, void 0, void 0
 export const updateBeeper = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
-        const beepers = yield readBeepersFromJsonFile();
-        const index = beepers.findIndex(b => b.id === id);
-        if (index === -1) {
+        let beepers = yield readBeepersFromJsonFile();
+        let beeper = beepers.find(b => b.id === id);
+        if (!beeper) {
             res.status(404).send('Beeper not found');
         }
         else {
-            const status = beepers[index].status;
-            beepers[index].status = status === BeeperStatus.MANUFACTURED ? BeeperStatus.DETONATED : BeeperStatus.MANUFACTURED;
+            beeper = yield updateBeeperStatus(beeper);
             yield writeAllToJson(beepers);
-            res.status(200).json({ message: 'Beeper updated successfully' });
+            if (beeper.status === BeeperStatus.DEPLOYED) {
+                const latitude = Number(req.body.latitude);
+                const longitude = Number(req.body.longitude);
+                let isLebanon = yield isInLebanon(latitude, longitude);
+                if (!isLebanon) {
+                    res.status(400).send('Beeper is not in Lebanon');
+                    return;
+                }
+                beeper.latitude = latitude;
+                beeper.longitude = longitude;
+                yield writeAllToJson(beepers);
+                beepers = yield readBeepersFromJsonFile();
+                beeper = beepers.find(b => b.id === id);
+                console.log("mmmmmmm");
+                beeper = yield openTimer(beeper);
+                beeper.detonated_at = new Date();
+                yield writeAllToJson(beepers);
+            }
+            res.status(200).json(beeper);
         }
     }
     catch (error) {

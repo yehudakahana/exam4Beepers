@@ -3,6 +3,6 @@ export var BeeperStatus;
     BeeperStatus["MANUFACTURED"] = "manufactured";
     BeeperStatus["ASSEMBLED"] = "assembled";
     BeeperStatus["SHIPPED"] = "shipped";
-    BeeperStatus["DETONATED"] = "detonated";
     BeeperStatus["DEPLOYED"] = "deployed";
+    BeeperStatus["DETONATED"] = "detonated";
 })(BeeperStatus || (BeeperStatus = {}));

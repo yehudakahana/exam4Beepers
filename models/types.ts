@@ -3,8 +3,9 @@ export enum BeeperStatus{
     MANUFACTURED = 'manufactured',
     ASSEMBLED = 'assembled',
     SHIPPED = 'shipped',
-    DETONATED = 'detonated',
     DEPLOYED = 'deployed',
+    DETONATED = 'detonated',
+
 }
 
 

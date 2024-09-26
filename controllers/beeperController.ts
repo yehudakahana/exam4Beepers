@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Beeper, BeeperStatus } from "../models/types.js";
 import { v4 as uuidv4 } from 'uuid';
 import {  readBeepersFromJsonFile, writeAllToJson, writeBeeperToJsonFile } from "../DAL/jsonBeeper.js";
-import { stat } from "fs";
+import { createNewBeeper, updateBeeperStatus, isInLebanon , openTimer} from "../services/beeperService.js";
 
 
 
@@ -11,17 +11,14 @@ import { stat } from "fs";
 export const createBeeper = async (req: Request, res: Response) => {
     try {
         const name: string = req.body.name;
-        const newBeeper: Beeper = {
-            id: uuidv4(),
-            name: name,
-            status: BeeperStatus.MANUFACTURED,
-            created_at: new Date(),
-            detonated_at: null,
-            latitude: 0,
-            longitude: 0
-        };
-
         const beepers: Beeper[] = await readBeepersFromJsonFile();
+
+        if (beepers.find(b => b.name === name)) {
+            res.status(400).send('Beeper already exists');
+            return;
+        }
+
+        const newBeeper: Beeper = await createNewBeeper(name);
         beepers.push(newBeeper);
         await writeAllToJson(beepers);
 
@@ -89,22 +86,48 @@ export const getBeepersByStatus = async (req: Request, res: Response) => {
 export const updateBeeper = async (req: Request, res: Response) => {
     try {
         const id: string = req.params.id;
-        const beepers: Beeper[] = await readBeepersFromJsonFile();
-        const index = beepers.findIndex(b => b.id === id);
-        if (index === -1) {
+        let beepers: Beeper[] = await readBeepersFromJsonFile();
+        let beeper: Beeper | undefined = beepers.find(b => b.id === id);
+        if (!beeper) {
             res.status(404).send('Beeper not found');
         }
         else {
-            const status: string = beepers[index].status;
-            beepers[index].status = status === BeeperStatus.MANUFACTURED ? BeeperStatus.DETONATED : BeeperStatus.MANUFACTURED;
-            await writeAllToJson(beepers);
-            res.status(200).json({ message: 'Beeper updated successfully' });
+                beeper = await updateBeeperStatus(beeper);
+                await writeAllToJson(beepers);
+            
+
+           if (beeper.status === BeeperStatus.DEPLOYED) {
+                const latitude: number = Number(req.body.latitude);
+                const longitude: number = Number( req.body.longitude);
+
+                let isLebanon = await isInLebanon(latitude, longitude);
+                if (!isLebanon) {
+                    res.status(400).send('Beeper is not in Lebanon');
+                    return
+                }
+
+                beeper.latitude = latitude;
+                beeper.longitude = longitude;
+                await writeAllToJson(beepers);
+
+                beepers = await readBeepersFromJsonFile();
+                beeper  =  beepers.find(b => b.id === id);
+                beeper =  await openTimer(beeper!);
+
+                await writeAllToJson(beepers);
+
         }
+        res.status(200).json(beeper);
+    }
+
     }
     catch (error) {
         res.status(500).send(error);
     }
 }
+
+
+
 
 
 
